@@ -1,0 +1,56 @@
+﻿@model List<Patient>
+
+@{
+	ViewData["Title"] = "Home Page";
+}
+@section Styles {
+	<link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<div>Patients</div>
+<a class="btn btn-success" asp-controller="Patients" asp-action="Add">Add Patient</a>
+
+<div>
+	<table class="table">
+		<tr>
+			<th>
+				First Name
+			</th>
+			<th>
+				Last Name
+			</th>
+			<th>
+				Address
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Options
+			</th>
+		</tr>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<th>
+					@item.FirstName
+				</th>
+				<th>
+					@item.LastName
+				</th>
+				<th>
+					@item.Address
+				</th>
+				<th>
+					@item.Email
+				</th>
+				<th>
+					<form>
+						<button class="btn btn-warning" asp-route-id="@item.Id" asp-controller="Patients" asp-action="Edit">Edit</button>
+						<button class="btn btn-danger" asp-route-id="@item.Id" asp-controller="Patients" asp-action="Delete">Delete</button>
+					</form>
+				</th>
+			</tr>
+		}
+	</table>
+</div>
