@@ -8,7 +8,11 @@ html {
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -60,12 +64,26 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
-
 }
 
-    .footer-icons svg {
-        color: black;
-    }
+.footer-icons-contact {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+.footer-icons-contact svg {
+    color: black;
+}
+
+.footer-icons svg {
+    color: black;
+}
 
 .footer-field {
     display: flex;
@@ -82,7 +100,16 @@ body {
     height: 35px;
 }
 
-    .footer-media svg {
-        width: 65%;
-        height: 65%;
-    }
+.footer-media svg {
+    width: 65%;
+    height: 65%;
+}
+
+.legister{
+    color: white;
+    transition: 0.2s ease-in-out;
+
+}
+.legister:hover{
+    background-color: rgb(158, 61, 138);
+}
