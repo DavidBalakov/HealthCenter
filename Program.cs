@@ -2,6 +2,7 @@ using HealthCenter.Data;
 using HealthCenter.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using HealthCenter.Services.Register;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<PatientsDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("PatientsConnectionString")));
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<PatientsDbContext>();
+builder.Services.AddScoped<ILogisterService, LogisterService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

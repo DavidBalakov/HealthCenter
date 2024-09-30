@@ -4,18 +4,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using HealthCenter.Models;
 using HealthCenter.Models.ViewModels;
+using HealthCenter.Services.Register;
 
 namespace Products.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        public UserController(UserManager<User> userManager
-            , SignInManager<User> signInManager)
+        private readonly ILogisterService _logisterService;
+        public UserController(ILogisterService logisterService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this._logisterService = logisterService;
         }
         public IActionResult Register()
         {
@@ -27,28 +25,13 @@ namespace Products.Controllers
             if (ModelState.IsValid)
             {
 
-                User user = new User()
-                {
-                    UserName = registerRequest.UserName,
-                    Email = registerRequest.Email,
-                };
-
-                var result = await _userManager.CreateAsync(user
-                    , registerRequest.Password);
+                IdentityResult result = await _logisterService.Register(registerRequest);
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "User");
-                    await _signInManager
-                        .SignInAsync(user, isPersistent: false);
-
                     return RedirectToAction("Index", "Home");
                 }
-
-                TempData["ErrorRegister"] = "Wrong Password";
-                return View(registerRequest);
             }
-            TempData["ErrorRegister"] = "Please fill out all the fields";
             return View(registerRequest);
         }
         public IActionResult LogIn()
@@ -60,23 +43,11 @@ namespace Products.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager
-                    .FindByNameAsync(logInRequest.UserName);
-                if (user != null)
+                var result = await _logisterService.LogIn(logInRequest);
+
+                if (result.Succeeded)
                 {
-                    var passwordCheck = await _userManager
-                        .CheckPasswordAsync(user
-                        , logInRequest.Password);
-                    if (passwordCheck)
-                    {
-                        var result = await _signInManager
-                            .PasswordSignInAsync(user
-                            , logInRequest.Password, false, false);
-                        if (result.Succeeded)
-                        {
-                            return RedirectToAction("Index", "Home");
-                        }
-                    }
+                    return RedirectToAction("Index", "Home");
                 }
             }
             return View(logInRequest);
@@ -84,7 +55,7 @@ namespace Products.Controllers
         [HttpGet]
         public async Task<IActionResult> LogOut()
         {
-            await _signInManager.SignOutAsync();
+            await _logisterService.LogOut();
 
             return RedirectToAction("Index", "Home");
         }
