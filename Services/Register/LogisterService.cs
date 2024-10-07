@@ -7,6 +7,10 @@ namespace HealthCenter.Services.Register
     class LogisterService : ILogisterService
     {
         private readonly IPatientsRepository _userRepository;
+        public LogisterService(IPatientsRepository patientsRepository)
+        {
+            _userRepository = patientsRepository;
+        }
         public async Task<IdentityResult> Register(RegisterViewModel registerRequest)
         {
             User user = new User()

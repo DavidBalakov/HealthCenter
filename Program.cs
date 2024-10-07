@@ -14,6 +14,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("PatientsConnecti
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<PatientsDbContext>();
 builder.Services.AddScoped<ILogisterService, LogisterService>();
+builder.Services.AddScoped<IPatientsRepository, PatientsRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
