@@ -6,14 +6,7 @@ namespace HealthCenter.Services.Register
 {
     class LogisterService : ILogisterService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        public LogisterService(UserManager<User> userManager
-            , SignInManager<User> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+        private readonly IPatientsRepository _userRepository;
         public async Task<IdentityResult> Register(RegisterViewModel registerRequest)
         {
             User user = new User()
@@ -22,31 +15,31 @@ namespace HealthCenter.Services.Register
                 Email = registerRequest.Email,
             };
 
-            var result = await _userManager.CreateAsync(user, registerRequest.Password);
+            var result = await _userRepository.CreateAsync(user, registerRequest.Password);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "User");
-                await _signInManager
-                    .SignInAsync(user, isPersistent: false);
+                await _userRepository.AddToRoleAsync(user, "User");
+                await _userRepository
+                    .SignInAsync(user);
             }
             return result;
         }
 
         public async Task<SignInResult> LogIn(LogInViewModel logInViewModel)
         {
-            User user = await _userManager
+            User user = await _userRepository
                     .FindByNameAsync(logInViewModel.UserName);
             if (user != null)
             {
-                var passwordCheck = await _userManager
+                var passwordCheck = await _userRepository
                     .CheckPasswordAsync(user
                     , logInViewModel.Password);
                 if (passwordCheck)
                 {
-                    var result = await _signInManager
+                    var result = await _userRepository
                         .PasswordSignInAsync(user
-                        , logInViewModel.Password, false, false);
+                        , logInViewModel.Password);
                     if (result.Succeeded)
                     {
                         return result;
@@ -58,7 +51,7 @@ namespace HealthCenter.Services.Register
 
         public async Task LogOut()
         {
-            await _signInManager.SignOutAsync();
+            await _userRepository.SignOutAsync();
         }
     }
 }
