@@ -1,10 +1,8 @@
 ﻿using HealthCenter.Models.ViewModels;
-using HealthCenter.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using HealthCenter.Models;
-using HealthCenter.Models.ViewModels;
 using HealthCenter.Services.Register;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Products.Controllers
 {
@@ -24,13 +22,14 @@ namespace Products.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 IdentityResult result = await _logisterService.Register(registerRequest);
 
                 if (result.Succeeded)
                 {
+                    TempData["SuccessLogin"] = "You have registered succesfully";
                     return RedirectToAction("Index", "Home");
                 }
+                TempData["FailedLogin"] = "There was a problem";
             }
             return View(registerRequest);
         }
@@ -47,14 +46,18 @@ namespace Products.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["SuccessLogin"] = "You have logged in succesfully";
                     return RedirectToAction("Index", "Home");
                 }
+                TempData["FailedLogin"] = "There was a problem";
             }
             return View(logInRequest);
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> LogOut()
         {
+            TempData["SuccessLogin"] = "You are logged out.";
             await _logisterService.LogOut();
 
             return RedirectToAction("Index", "Home");
